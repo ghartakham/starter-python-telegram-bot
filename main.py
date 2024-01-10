@@ -20,7 +20,7 @@ Thread(target=app.run,args=("0.0.0.0",8080)).start()
 TOKEN = '6946687250:AAGZnl8ERZrvu6prjsFucx0fYuEVVV1j06A'
 
 dp = Dispatcher()
-bing = BingArt('1OLX0kT0icwPW_J4zQoe1twphJTVKsbQC3auzqKf3KCdusqmoZQoHlYbWgYXwD7r2FJbkj_KCeikwX-FxWcAOgBeip6eOuWfaau_XQ5uWuuc04vj7gWXA78OAqTO2jSoBfg7cOyTKXFmGzUsphWWe7W5PjaE2VHy5TtbDodceE6Xi35VBLl_H-lfAUTHKLrDzfQKizK2DCSBrakxITXeV5w')
+bing = BingArt('1OWvkQru-dHg-5v5up6YuC7oFC4YKdcvp-FT3I-kp8OXOD8EmLFjk1Xoe6allLSUjvPbdD7w5tc2jWXlyy__spRaZ0OWmt7EmTGpktM4UR-gZAd9YzQjDIC4l3PhdAdrI2B6pPBK_IHOMDJ6W-hP29g0SEmQQrlwQ9AeNtqn9WMzfFY6Rd40GhJmifJJq5jc1k8XjdZHxFx2IImS7zqpTmQ')
 
 def is_english(text):
     english_chars = string.ascii_letters + string.digits + string.punctuation + string.whitespace
