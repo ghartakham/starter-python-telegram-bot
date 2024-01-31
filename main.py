@@ -95,7 +95,7 @@ async def process_processing(callback_query: CallbackQuery):
     output_file_path = f"{user_id}_output.mp3"
 
     try:
-        await bot.send_message(user_id, "🎚 Processing your track...", reply=False)
+        await bot.send_message(user_id, "🎚 Processing your track...")
         master_track(input_file_path, output_file_path, volume=options_data[user_id]['volume'], style=options_data[user_id]['style'])
 
         with open(output_file_path, 'rb') as audio:
