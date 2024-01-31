@@ -108,7 +108,7 @@ def find_cool_moment_for_preview(filename, preview_length_ms=15000):
     return preview_filename
 
 def get_preview_samples(file_name_in):
-    upload_id, asset_id, etag = upload_file(file_name_in)
+    upload_id, asset_id, etag = upload_file(find_cool_moment_for_preview(file_name_in))
     max_threads.release()
     complete_upload(upload_id, etag)
     samples = get_mastering_samples(asset_id)

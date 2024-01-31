@@ -56,9 +56,12 @@ async def process_audio(message: types.Message):
     await message.reply("⏬ Downloading file...", reply=False)
     await bot.download_file_by_id(file_id, input_file_path)
 
-    await message.reply("Please choose the style and volume for processing:", reply_markup=style_buttons)
+    await message.reply("👀 Generating previews...", reply=False)
+    samples = get_preview_samples(file_path)
+    options_data[user_id].update({'samples': samples})
+
+    await message.reply("Please choose the style and volume for processing or preview:", reply_markup=style_buttons)
     await message.reply("Select volume:", reply_markup=volume_buttons)
-    # The next steps will be called by the user via button callbacks
 
 @dp.callback_query_handler(lambda c: c.data in ('PS1', 'PS2', 'PS3'))
 async def process_style(callback_query: CallbackQuery):
@@ -79,7 +82,7 @@ async def process_preview(callback_query: CallbackQuery):
     user_id = callback_query.from_user.id
     file_path = f"{user_id}_input.mp3"
 
-    samples = get_preview_samples(file_path)
+    samples = options_data[user_id]['samples']
     selected_sample = next((sample for sample in samples if sample['intensity'] == options_data[user_id]['volume'] and sample['style'] == options_data[user_id]['style']), None)
 
     if selected_sample:
