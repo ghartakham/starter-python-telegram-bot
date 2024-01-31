@@ -1,7 +1,5 @@
-bingart
-asyncio
-aiogram
-mintrans
-openai
+aiogram==2.25.2
+requests
+pydub
 uvicorn
 flask
