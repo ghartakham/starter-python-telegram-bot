@@ -57,7 +57,7 @@ async def process_audio(message: types.Message):
     await bot.download_file_by_id(file_id, input_file_path)
 
     await message.reply("👀 Generating previews...", reply=False)
-    samples = get_preview_samples(file_path)
+    samples = get_preview_samples(input_file_path)
     options_data[user_id].update({'samples': samples})
 
     await message.reply("Please choose the style and volume for processing or preview:", reply_markup=style_buttons)
