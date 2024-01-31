@@ -33,9 +33,7 @@ volume_buttons = InlineKeyboardMarkup(row_width=3).add(
 
 preview_button = InlineKeyboardMarkup().add(
     InlineKeyboardButton("Preview", callback_data="Preview")
-)
-
-processing_button = InlineKeyboardMarkup().add(
+).add(
     InlineKeyboardButton("Processing", callback_data="Processing")
 )
 
