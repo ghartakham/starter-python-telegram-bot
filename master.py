@@ -44,7 +44,7 @@ def merge_audio(chunks, output_filename, original_bitrate):
 
 max_threads = threading.Semaphore(3)
 
-def master_chunk(chunk):
+def master_chunk(chunk, volume, style):
     max_threads.acquire()
     try:        
         upload_id, asset_id, etag = upload_file(chunk)
@@ -52,7 +52,7 @@ def master_chunk(chunk):
         complete_upload(upload_id, etag)
         samples = get_mastering_samples(asset_id)
         for sample in samples:
-            if sample['intensity'] == 'Medium' and sample['style'] == 'PS2':
+            if sample['intensity'] == volume and sample['style'] == style:
                 content = requests.get(sample['mp3Url']).content
                 with open(chunk, 'wb') as f:
                     f.write(content)
@@ -60,7 +60,7 @@ def master_chunk(chunk):
     finally:
         pass
 
-def master_track(file_name_in, file_name_out):
+def master_track(file_name_in, file_name_out, volume='Medium', style='PS2'):
     file_info = mediainfo(file_name_in)
     original_bitrate = file_info['bit_rate']
 
@@ -69,7 +69,7 @@ def master_track(file_name_in, file_name_out):
     threads = []
 
     for chunk in chunks:
-        thread = threading.Thread(target=master_chunk, args=(chunk,))
+        thread = threading.Thread(target=master_chunk, args=(chunk, volume, style,))
         threads.append(thread)
         thread.start()
 
@@ -81,3 +81,36 @@ def master_track(file_name_in, file_name_out):
 
     for chunk in chunks:
         os.remove(chunk)
+
+def find_cool_moment_for_preview(filename, preview_length_ms=15000):
+    audio = AudioSegment.from_file(filename)
+    highest_peak = -float('inf')
+    peak_time = 0
+
+    file_info = mediainfo(filename)
+    original_bitrate = file_info['bit_rate']
+
+    chunk_length_ms = 1000
+    for i in range(0, len(audio) - preview_length_ms, chunk_length_ms):
+        chunk = audio[i:i + chunk_length_ms]
+        chunk_rms = chunk.rms
+        if chunk_rms > highest_peak:
+            highest_peak = chunk_rms
+            peak_time = i
+
+    start_time = max(peak_time - (preview_length_ms // 2), 0)
+    end_time = start_time + preview_length_ms
+    preview_chunk = audio[start_time:end_time]
+
+    preview_filename = f"{filename}_{int(start_time // 1000)}_{int(end_time // 1000)}.mp3"
+    preview_chunk.export(preview_filename, format='mp3', bitrate=original_bitrate)
+
+    return preview_filename
+
+def get_preview_samples(file_name_in):
+    upload_id, asset_id, etag = upload_file(file_name_in)
+    max_threads.release()
+    complete_upload(upload_id, etag)
+    samples = get_mastering_samples(asset_id)
+    delete_asset(asset_id)
+    return samples
